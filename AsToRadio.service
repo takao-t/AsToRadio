@@ -1,0 +1,15 @@
+[Unit]
+Description=Audiosocket To  Radio Gateway
+After=network.target sound.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/AsToRadio.py
+Restart=always
+RestartSec=3
+Environment=PYTHONUNBUFFERED=1
+User=asterisk
+Group=asterisk
+
+[Install]
+WantedBy=multi-user.target

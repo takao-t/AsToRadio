@@ -5,12 +5,14 @@ Debian 13 (Trixie) 上で動作する、Asterisk と無線機（Digirig Mobile�
 ## システム要件
 OS: Debian 13 (Trixie) 以降
 
-Hardware: Digirig Mobile (または CM108系オーディオ + CP2102系シリアル 複合デバイス)
+ハードウェア: Digirig Mobile (または CM108系オーディオ + CP2102系シリアル 複合デバイス)、あるいはオーディオIFとUSBシリアル等。ここではDigirig Mobileを使用しています。
 
-Software: Asterisk (app_audiosocket モジュール必須)
+ソフトウェア: Asterisk (AudioSocketで通信します)
 
 ## インストール手順
+
 必要なパッケージの導入
+
 仮想環境(venv)は使用せず、システム標準のパッケージを使用します。
 
 ```
@@ -57,3 +59,32 @@ SERIAL_PORT = "/dev/ttyUSB0"
 # あるいは明示指定する(要書き換え)
 # SERIAL_PORT = "/dev/serial/by-id/usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_98cdcf305587ed11a7322ed7a603910e-if00-port0"
 ```
+
+## ファイルの配置
+
+```
+cp AsToRadio.py /usr/local/bin/.
+chmod +x /usr/local/bin/AsToRadio.py
+```
+
+デーモン起動するためにsystemdのUnitファイルをコピーします。なお、実行ユーザ/グループは"asterisk"になっていますので、異なるユーザ/グループで実行したい場合には書き換えてください。
+
+```
+cp AsToRadio.service /etc/systemd/system/.
+systemctl daemon-reload
+systemctl enable AsToRadio
+```
+
+これでsystemctl start AsToRadioで起動するはずです。なおデーモン化する前にフォアグラウンド起動してみたい場合には単純に python3 ./AsToRadio.py で実行してみてください。
+
+## Asteriskからの使用
+
+```
+exten => 7000,1,NoOp
+exten => 7000,n,Answer()
+exten => 7000,n,Set(MYUUID=${UUID()})
+exten => 7000,n,Audiosocket(${MYUUID},127.0.0.1:9092)
+exten => 7000,n,Hangup
+```
+
+上記の例のようにAudioscoket()でこのゲートウェイに対して接続します。接続されると「無線空間」の音が聞こえるはずです。送信したい場合にはDTMFで'*'を押してから喋ってください。再び受信に戻るには'*'をもう一度押します。なお、接続している電話機等が切断するとPTTは自動的にオフになります。
