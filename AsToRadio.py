@@ -51,7 +51,7 @@ class RadioServer:
         
         self.lock = threading.RLock()
         
-        # DTMFチャタリング防止用
+        # DTMF連打防止用
         self.last_dtmf_time = 0
 
     def setup_serial(self):
@@ -158,7 +158,7 @@ class RadioServer:
                     digit = payload.decode('utf-8', errors='ignore')
                     
                     if digit == '*':
-                        # チャタリング防止（0.3秒以内の連打は無視）
+                        # 連打防止（0.3秒以内の連打は無視）
                         now = time.time()
                         if now - self.last_dtmf_time > DTMF_DEBOUNCE_TIME:
                             # DTMF確認用
