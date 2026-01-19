@@ -2,6 +2,8 @@
 
 Debian 13 (Trixie) 上で動作する、Asterisk と無線機（Digirig Mobile経由）を接続するためのゲートウェイシステムです。 Python標準の alsa-audio ライブラリを使用し、AudioSocketプロトコルを通じて音声の送受信とPTT制御を行います。
 
+Trixie以降のALSAのライブラリが"まとも"になった気がするので標準のライブラリだけで動作させることができるようになりました(venv不要)。
+
 ## システム要件
 OS: Debian 13 (Trixie) 以降
 
