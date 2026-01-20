@@ -30,7 +30,7 @@ sudo apt install python3-serial python3-alsaaudio
 スクリプトを実行するユーザー（asteriskと仮定）には、シリアルポートとオーディオデバイスへのアクセス権限が必要です。
 
 ```
-sudo usermod -aG dialout,audio $USER
+sudo usermod -aG dialout,audio asterisk
 ```
 
 ## デバイスの確認
